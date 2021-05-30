@@ -10,25 +10,25 @@ class Consts:
 
 class Processor():
     def __init__(self, img_path, final_path=None, override=0):
-        self.start = time.time()
         self.img_path = img_path
         self.final_path = final_path
         if override == 1:
             self.final_path = img_path
         elif not final_path:
             self.final_path = "".join(img_path.split('.')[0: -1]) + "_processed.png"
+
         image = Image.open(img_path)
         self.img_array = np.array(image, dtype=np.uint8)
         self.before = self.img_array
         if len(self.img_array.shape) < 3:
-            print(img_path, "is not an image, has only", len(self.img_array.shape), " dimensions")
-            return
+            raise NameError(img_path, "is not an image, has only", len(self.img_array.shape), " dimensions")
+
         self.h = self.img_array.shape[0]
         self.w = self.img_array.shape[1]
         self.c = self.img_array.shape[2]
         if self.c < 3 or self.c > 4:
-            print(img_path, "is not a valid RGB or RGBA image")
-            return
+            raise NameError(img_path, "is not a valid RGB or RGBA image")
+
         self.StartProcess()
 
 
@@ -63,5 +63,4 @@ class Processor():
         self.Process()
         self.PostProcessing()
         self.end = time.time()
-        print("time:", self.end-self.start)
 

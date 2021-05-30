@@ -1,6 +1,10 @@
-from Processor import Processor, Consts
+import time
+
+from Processor import Processor
 from PIL import Image
 import numpy as np
+import os
+
 
 def test_processor():
     folder = "test_images/"
@@ -20,8 +24,29 @@ def test_processor():
             print(original_path, "test didn't passed, printing differences")
 
 
+def process_folder(path):
+    not_images = 0
+    for filename in os.listdir(path):
+        if filename.endswith(".png"):
+            filename_without_suffix = os.path.splitext(filename)[0]
+            image_path = os.path.join(path, filename)
+            final_folder = os.path.join(path, "Processed")
+
+            try:
+                os.mkdir(final_folder)
+            except FileExistsError:
+                pass
+
+            final_path = os.path.join(final_folder, filename_without_suffix + "_processed.png")
+            Processor(image_path, final_path=final_path)
+        else:
+            not_images+=1
+    print("total number of files processed:", len(os.listdir(path)) - not_images)
+
 
 if __name__ == '__main__':
-    # test_processor()
-
-    p = Processor("images/Prototype.png")
+    pass
+    # images_folder_path = r'C:\Users\Aviv\Downloads\prototype 02'
+    # start = time.time()
+    # process_folder(images_folder_path)
+    # print("all execution took: ", time.time()-start, " sec")
