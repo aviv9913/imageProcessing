@@ -8,27 +8,34 @@ import shutil
 import os
 
 
-def test_processor():
-    folder = "test_images/"
-    fileprefix = "GershonExample"
-    for i in range(1, 4):
-        original_path = folder + fileprefix + str(i) + ".png"
-        final_path = folder + fileprefix + str(i) + "_processed.png"
+def test_processor(path):
+    i = 0
+    not_images = 0
+    numOfImages = 100
+    for filename in os.listdir(path):
+        if i % numOfImages != 0:
+            i += 1
+            continue
 
-        Processor(original_path, final_path=final_path)
-        original = Image.open(original_path)
-        original = np.array(original, dtype=np.uint8)
+        if filename.endswith(".png"):
+            filename_without_suffix = os.path.splitext(filename)[0]
+            image_path = os.path.join(path, filename)
+            final_folder = os.path.join(path, "TestExamples")
 
-        processed = Image.open(final_path)
-        processed = np.array(processed, dtype=np.uint8)
-        dif = original == processed
-        if not dif.all():
-            print(original_path, "test didn't passed, printing differences")
+            try:
+                os.mkdir(final_folder)
+            except FileExistsError:
+                pass
 
+            final_path = os.path.join(final_folder, filename_without_suffix + "_processed.png")
+            Processor(image_path, final_path=final_path, TransparentColor=[255, 255, 255, 100])
+        else:
+            not_images += 1
+        i += 1
 
 def process_folder(path):
     not_images = 0
-    for filename in sorted(os.listdir(path)):
+    for filename in os.listdir(path):
         if filename.endswith(".png"):
             filename_without_suffix = os.path.splitext(filename)[0]
             image_path = os.path.join(path, filename)
@@ -50,7 +57,6 @@ def rename_images(path):
     index = 0
     images_in_path = [float((''.join(f.split('_')[0])[5:])) for f in os.listdir(path) if f.endswith(".png")]
     for filename in sorted(os.listdir(path), key=lambda f: float((''.join(f.split('_')[0])[5:]))):
-        print("renaming layer image ", filename)
         image_path = os.path.join(path, filename)
         final_folder = os.path.join(path, "Processed_with_renaming")
 
@@ -62,24 +68,19 @@ def rename_images(path):
         str_index = f'{index:05}'
         prefix = 'prototype_'
         final_path = os.path.join(final_folder, prefix + str_index + ".png")
-        if filename == "Value8.228_Top_processed.png":
-            print("copying layer 8.228")
-            for i in range(60):
-                shutil.copyfile(image_path, final_path)
-                index += 1
-                str_index = f'{index:05}'
-                final_path = os.path.join(final_folder, prefix + str_index + ".png")
-        else:
-            shutil.copyfile(image_path, final_path)
-            index += 1
+        shutil.copyfile(image_path, final_path)
+        index += 1
     print("total number of files processed:", index+1)
 
 
 
 if __name__ == '__main__':
-    path = r'C:\Users\aviv\Downloads\prototype 02\Processed\Processed_with_renaming'
-    print(os.listdir(path))
-    # start = time.time()
-    # process_folder(images_folder_path)
-    # print("all execution took: ", time.time()-start, " sec")
-    # rename_images(path)
+    images_folder_path = r'C:\Users\Aviv\Downloads\TmpForMOP\part 2'
+    start = time.time()
+    process_folder(images_folder_path)
+    # test_processor(images_folder_path)
+    print("Processing Time: ", time.time()-start, " sec")
+    start = time.time()
+    processed_folder_path = os.path.join(images_folder_path, "Processed")
+    rename_images(processed_folder_path)
+    print("Renaming Time: ", time.time() - start, " sec")

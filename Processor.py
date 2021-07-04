@@ -9,7 +9,10 @@ class Consts:
     SOLID_ALPHA_VALUE = 255
 
 class Processor():
-    def __init__(self, img_path, final_path=None, override=0):
+    def __init__(self, img_path, final_path=None, override=0, TransparentColor=None):
+        if TransparentColor is not None:
+            Consts.TRANSPARENT_COLOR = TransparentColor
+
         self.img_path = img_path
         self.final_path = final_path
         if override == 1:
