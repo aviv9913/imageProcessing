@@ -4,15 +4,12 @@ import time
 
 class Consts:
     BACKGROUND_COLOR = [0, 0, 0, 0]
-    TRANSPARENT_COLOR = [255, 255, 255, 0]
+    TRANSPARENT_COLOR = [255, 255, 255, 100]
     TRANSPARENT_ALPHA_VALUE = 0
     SOLID_ALPHA_VALUE = 255
 
 class Processor():
     def __init__(self, img_path, final_path=None, override=0, TransparentColor=None):
-        if TransparentColor is not None:
-            Consts.TRANSPARENT_COLOR = TransparentColor
-
         self.img_path = img_path
         self.final_path = final_path
         if override == 1:
