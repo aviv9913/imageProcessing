@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import time
+from scipy.ndimage import rotate
 
 class Consts:
     BACKGROUND_COLOR = [0, 0, 0, 0]
@@ -9,14 +10,14 @@ class Consts:
     SOLID_ALPHA_VALUE = 255
 
 class Processor():
-    def __init__(self, img_path, final_path=None, override=0, TransparentColor=None):
+    def __init__(self, img_path, final_path=None, override=0, rotate=None):
         self.img_path = img_path
         self.final_path = final_path
         if override == 1:
             self.final_path = img_path
         elif not final_path:
             self.final_path = "".join(img_path.split('.')[0: -1]) + "_processed.png"
-
+        self.rotate = rotate
         image = Image.open(img_path)
         self.img_array = np.array(image, dtype=np.uint8)
         self.before = self.img_array
@@ -53,6 +54,9 @@ class Processor():
 
     def PostProcessing(self):
         self.img_array = self.img_array.reshape(self.h, self.w, 4)
+        if self.rotate is not None:
+            # self.img_array = rotate(self.img_array, angle=45)
+            self.img_array = np.rot90(self.img_array, self.rotate['axes'])
         final_img = Image.fromarray(self.img_array)
         final_img.save(self.final_path)
         # final_img.show()
