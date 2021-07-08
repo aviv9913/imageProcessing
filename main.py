@@ -50,13 +50,13 @@ def process_folder(path):
     print("Processing Time: ", time.time()-start, " sec")
 
 
-def rename_images(path):
+def rename_images(path, isReversed):
     start = time.time()
     index = 0
-    prefix = 'prototype_'
+    prefix = 'bottom_stack_'
     images_in_path = [float((''.join(f.split('_')[0])[5:])) for f in os.listdir(path) if f.endswith(".png")]
     print("start renaming files in: ", path)
-    for filename in tqdm(sorted(os.listdir(path), key=lambda f: float((''.join(f.split('_')[0])[5:])))):
+    for filename in tqdm(sorted(os.listdir(path), key=lambda f: float((''.join(f.split('_')[0])[5:])), reverse=isReversed)):
         image_path = os.path.join(path, filename)
         final_folder = os.path.join(path, "Processed_with_renaming")
 
@@ -73,10 +73,9 @@ def rename_images(path):
     print("Renaming Time: ", time.time() - start, " sec")
 
 
-
 if __name__ == '__main__':
-    images_folder_path = r'C:\Users\aviv\Downloads\Outer sphere v3\ver 05'
+    images_folder_path = r'C:\Users\Aviv\Downloads\Outer sphere v7 20cm\ver 10\part 1'
     process_folder(images_folder_path)
     processed_folder_path = os.path.join(images_folder_path, "Processed")
-    rename_images(processed_folder_path)
+    rename_images(processed_folder_path, False)
     # test_processor(images_folder_path)

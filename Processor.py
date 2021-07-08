@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 import time
-from scipy.ndimage import rotate
+
 
 class Consts:
     BACKGROUND_COLOR = [0, 0, 0, 0]
